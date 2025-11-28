@@ -693,3 +693,15 @@ procdump(void)
     printf("\n");
   }
 }
+
+// implement of getNproc
+uint64 getNproc(void){
+  struct proc *p ;
+  uint64 count = 0;
+  for(p = &proc[0] ; p != &proc[NPROC]; p++){
+    if(p->state != UNUSED){
+      count ++;
+    }
+  }
+  return count;
+}
