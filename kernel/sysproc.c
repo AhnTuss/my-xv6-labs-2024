@@ -5,6 +5,7 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "kernel/sysinfo.h"
 
 uint64
 sys_exit(void)
@@ -91,3 +92,19 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+ uint64 sys_sysinfo(void){
+  struct sysinfo kernel_sysinfo; //store sysinfo of kernel
+  uint64 addr;
+
+   // get pointer of user sysinfo
+   argaddr(0, addr);
+   kernel_sysinfo.freemem = getFreemem();
+   kernel_sysinfo.nproc = getNproc();
+   // copy out to user
+   struct proc * p = myproc();
+   if(copyout(p->pagetable, addr, (char*)&kernel_sysinfo, sizeof(kernel_sysinfo)) < 0){
+    return -1;
+   }
+   return 0;
+ }
