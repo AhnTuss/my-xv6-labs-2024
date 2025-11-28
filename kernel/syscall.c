@@ -53,11 +53,13 @@ argraw(int n)
 }
 
 // Fetch the nth 32-bit system call argument.
-void
+int
 argint(int n, int *ip)
 {
   *ip = argraw(n);
+  return 0;
 }
+
 
 // Retrieve an argument as a pointer.
 // Doesn't check for legality, since
@@ -172,7 +174,7 @@ syscall(void)
         printf("%d: syscall %s -> %d\n", 
                p->pid,
                syscall_names[num],
-               p->trapframe->a0);
+               (int)p->trapframe->a0);
     }
   } else {
     printf("%d %s: unknown sys call %d\n",
